@@ -1,0 +1,863 @@
+{
+  "info": {
+    "name": "reqres-clone",
+    "description": "Ported 1:1 from the Bruno collection (ClasherGeek77/bruno-collection). Exercises the local stateless reqres clone (http://localhost:40000). CHAIN folder ports bru.setVar -> pm.variables.set; run folders in order.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "USERS",
+      "item": [
+        {
+          "name": "List users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/users?page=1",
+            "description": "ported from the Bruno collection"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.expect(pm.response.code).to.equal(200));",
+                  "const d = pm.response.json(); pm.test(\"12 users\", () => pm.expect(d.total).to.equal(12));",
+                  "pm.test(\"6 per page\", () => pm.expect(d.data.length).to.equal(6));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Single user",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/users/2",
+            "description": "ported from the Bruno collection"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.expect(pm.response.code).to.equal(200));",
+                  "pm.test(\"janet\", () => pm.expect(pm.response.json().data.first_name).to.equal(\"Janet\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "User not found",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/users/23",
+            "description": "ported from the Bruno collection"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 404\", () => pm.expect(pm.response.code).to.equal(404));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create user",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false
+              }
+            ],
+            "url": "{{base_url}}/api/users",
+            "description": "ported from the Bruno collection",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"morpheus\",\n  \"job\": \"leader\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", () => pm.expect(pm.response.code).to.equal(201));",
+                  "pm.test(\"has id\", () => pm.expect(pm.response.json().id).to.be.a(\"string\"));",
+                  "pm.test(\"has createdAt\", () => pm.expect(pm.response.json().createdAt).to.be.a(\"string\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false
+              }
+            ],
+            "url": "{{base_url}}/api/users/2",
+            "description": "ported from the Bruno collection",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"janet\",\n  \"job\": \"leader\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.expect(pm.response.code).to.equal(200));",
+                  "pm.test(\"updatedAt\", () => pm.expect(pm.response.json().updatedAt).to.be.a(\"string\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update (PATCH)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false
+              }
+            ],
+            "url": "{{base_url}}/api/users/2",
+            "description": "ported from the Bruno collection",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"job\": \"lecturer\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.expect(pm.response.code).to.equal(200));",
+                  "pm.test(\"job echoed\", () => pm.expect(pm.response.json().job).to.equal(\"lecturer\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete user",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{base_url}}/api/users/2",
+            "description": "ported from the Bruno collection"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 204\", () => pm.expect(pm.response.code).to.equal(204));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delayed response",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/users?delay=1",
+            "description": "ported from the Bruno collection"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.expect(pm.response.code).to.equal(200));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "RESOURCES",
+      "item": [
+        {
+          "name": "List resource",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/unknown",
+            "description": "ported from the Bruno collection"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.expect(pm.response.code).to.equal(200));",
+                  "pm.test(\"6 colors\", () => pm.expect(pm.response.json().data.length).to.equal(6));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Single resource",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/unknown/2",
+            "description": "ported from the Bruno collection"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.expect(pm.response.code).to.equal(200));",
+                  "pm.test(\"fuchsia rose\", () => pm.expect(pm.response.json().data.name).to.equal(\"fuchsia rose\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Resource not found",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/unknown/23",
+            "description": "ported from the Bruno collection"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 404\", () => pm.expect(pm.response.code).to.equal(404));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "PRODUCTS",
+      "item": [
+        {
+          "name": "List products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products",
+            "description": "ported from the Bruno collection"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.expect(pm.response.code).to.equal(200));",
+                  "pm.test(\"3 products\", () => pm.expect(pm.response.json().total).to.equal(3));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "AUTH",
+      "item": [
+        {
+          "name": "Register (success)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false
+              }
+            ],
+            "url": "{{base_url}}/api/register",
+            "description": "ported from the Bruno collection",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"eve.holt@reqres.in\",\n  \"password\": \"cityslicka\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.expect(pm.response.code).to.equal(200));",
+                  "pm.test(\"token\", () => pm.expect(pm.response.json().token).to.equal(\"QpwL5tke4Pnpja7X4\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Register (unsuccessful)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false
+              }
+            ],
+            "url": "{{base_url}}/api/register",
+            "description": "ported from the Bruno collection",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"eve.holt@reqres.in\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 400\", () => pm.expect(pm.response.code).to.equal(400));",
+                  "pm.test(\"error\", () => pm.expect(pm.response.json().error).to.equal(\"Missing password\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login (success)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false
+              }
+            ],
+            "url": "{{base_url}}/api/login",
+            "description": "ported from the Bruno collection",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"eve.holt@reqres.in\",\n  \"password\": \"cityslicka\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.expect(pm.response.code).to.equal(200));",
+                  "pm.test(\"token\", () => pm.expect(pm.response.json().token).to.be.a(\"string\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login (unsuccessful)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false
+              }
+            ],
+            "url": "{{base_url}}/api/login",
+            "description": "ported from the Bruno collection",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"peter@harold.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 400\", () => pm.expect(pm.response.code).to.equal(400));",
+                  "pm.test(\"error\", () => pm.expect(pm.response.json().error).to.equal(\"Missing password\"));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "EXTRAS",
+      "item": [
+        {
+          "name": "Unknown filter returns empty",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/users?unknown=1",
+            "description": "ported from the Bruno collection"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.expect(pm.response.code).to.equal(200));",
+                  "pm.test(\"empty data\", () => pm.expect(pm.response.json().data.length).to.equal(0));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Avatar image served locally",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/img/faces/2-image.jpg",
+            "description": "ported from the Bruno collection"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.expect(pm.response.code).to.equal(200));",
+                  "pm.test(\"jpeg\", () => pm.expect(pm.response.headers.get(\"content-type\")).to.equal(\"image/jpeg\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "List users (user-list)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/user-list?delay=1",
+            "description": "ported from the Bruno collection"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.expect(pm.response.code).to.equal(200));",
+                  "const d = pm.response.json(); pm.test(\"10 per page\", () => pm.expect(d.data.length).to.equal(10));",
+                  "pm.test(\"total 12\", () => pm.expect(d.total).to.equal(12));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update unknown id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false
+              }
+            ],
+            "url": "{{base_url}}/api/users/23",
+            "description": "ported from the Bruno collection",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"nope\",\n  \"job\": \"ghost\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.expect(pm.response.code).to.equal(200));",
+                  "pm.test(\"updatedAt\", () => pm.expect(pm.response.json().updatedAt).to.be.a(\"string\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete unknown id",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{base_url}}/api/users/23",
+            "description": "ported from the Bruno collection"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 204\", () => pm.expect(pm.response.code).to.equal(204));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create user minimal body",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false
+              }
+            ],
+            "url": "{{base_url}}/api/users",
+            "description": "ported from the Bruno collection",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", () => pm.expect(pm.response.code).to.equal(201));",
+                  "const d = pm.response.json(); pm.test(\"id\", () => pm.expect(d.id).to.be.a(\"string\"));",
+                  "pm.test(\"createdAt\", () => pm.expect(d.createdAt).to.be.a(\"string\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Register missing email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false
+              }
+            ],
+            "url": "{{base_url}}/api/register",
+            "description": "ported from the Bruno collection",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"x\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 400\", () => pm.expect(pm.response.code).to.equal(400));",
+                  "pm.test(\"error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\"));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "CHAIN",
+      "item": [
+        {
+          "name": "Chain 01 plan",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/users/2",
+            "description": "ported from the Bruno collection"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.variables.set(\"plan_name\", \"chain-morpheus\");",
+                  "pm.variables.set(\"plan_job\", \"chain-leader\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.expect(pm.response.code).to.equal(200));",
+                  "pm.test(\"clone reachable\", () => pm.expect(pm.response.json().data.id).to.equal(2));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Chain 02 create",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false
+              }
+            ],
+            "url": "{{base_url}}/api/users",
+            "description": "ported from the Bruno collection",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"{{plan_name}}\",\n  \"job\": \"{{plan_job}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.variables.set(\"new_user_id\", pm.response.json().id);",
+                  "pm.test(\"status 201\", () => pm.expect(pm.response.code).to.equal(201));",
+                  "pm.test(\"job echoes plan\", () => pm.expect(pm.response.json().job).to.equal(\"chain-leader\"));",
+                  "pm.test(\"name echoes plan\", () => pm.expect(pm.response.json().name).to.equal(\"chain-morpheus\"));",
+                  "pm.test(\"id issued\", () => pm.expect(pm.response.json().id).to.be.a(\"string\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Chain 03 readback id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/users?page={{new_user_id}}",
+            "description": "ported from the Bruno collection"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.expect(pm.response.code).to.equal(200));",
+                  "pm.test(\"captured id resolved\", () => pm.expect(pm.response.json().page).to.be.above(2));",
+                  "pm.test(\"clamped page empty\", () => pm.expect(pm.response.json().data.length).to.equal(0));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Chain 04 update",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false
+              }
+            ],
+            "url": "{{base_url}}/api/users/{{new_user_id}}",
+            "description": "ported from the Bruno collection",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"chain-trinity\",\n  \"job\": \"chain-leader\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.expect(pm.response.code).to.equal(200));",
+                  "pm.test(\"updatedAt\", () => pm.expect(pm.response.json().updatedAt).to.be.a(\"string\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Chain 05 delete",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{base_url}}/api/users/{{new_user_id}}",
+            "description": "ported from the Bruno collection"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 204\", () => pm.expect(pm.response.code).to.equal(204));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Chain 06 readback stateless",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/users/{{new_user_id}}",
+            "description": "ported from the Bruno collection"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.expect(pm.response.code).to.equal(200));",
+                  "pm.test(\"nothing persisted (live semantics)\", () => pm.expect(pm.response.json().data.first_name).to.equal(\"Eve\"));",
+                  "pm.test(\"chain var still resolves\", () => pm.expect(pm.response.json().data.id).to.equal(4));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:40000",
+      "type": "string"
+    },
+    {
+      "key": "plan_name",
+      "value": "chain-morpheus",
+      "type": "string"
+    },
+    {
+      "key": "plan_job",
+      "value": "chain-leader",
+      "type": "string"
+    },
+    {
+      "key": "new_user_id",
+      "value": "4",
+      "type": "string"
+    }
+  ]
+}
