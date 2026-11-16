@@ -1,7 +1,7 @@
 {
   "info": {
-    "name": "reqres-clone",
-    "description": "Ported 1:1 from the Bruno collection (ClasherGeek77/bruno-collection). Exercises the local stateless reqres clone (http://localhost:40000). CHAIN folder ports bru.setVar -> pm.variables.set; run folders in order.",
+    "name": "reqres_clone",
+    "description": "Ported 1:1 from the Bruno collection (ClasherGeek77/bruno_collection). Exercises the local stateless reqres clone (http://localhost:40000). CHAIN folder ports bru.setVar -> pm.variables.set; run folders in order.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [

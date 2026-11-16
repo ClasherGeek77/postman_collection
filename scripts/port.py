@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Port the Bruno collection (ClasherGeek77/bruno_collection) to Postman v2.1 JSON.
 
-Regenerates reqres-clone.postman_collection.json from the .bru files, parsing each
+Regenerates reqres_clone.postman_collection.json from the .bru files, parsing each
 with the same @usebruno/lang@0.12 the Bruno GUI uses, and translating the JS:
 
     bru.setVar(k, v)              -> pm.variables.set(k, v)
@@ -22,7 +22,7 @@ import subprocess
 
 SRC = os.path.expanduser('~/Documents/github_clashergeek77/bruno_collection/reqres')
 OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                   'reqres-clone.postman_collection.json')
+                   'reqres_clone.postman_collection.json')
 GROUPS = ['USERS', 'RESOURCES', 'PRODUCTS', 'AUTH', 'EXTRAS', 'CHAIN']
 LANG = os.path.expanduser('~/.local/node_modules/@usebruno/lang')
 
@@ -102,7 +102,7 @@ def main():
         groups[g] = [{k: v for k, v in it.items() if k != '_seq'} for it in items]
     coll = {
         'info': {
-            'name': 'reqres-clone',
+            'name': 'reqres_clone',
             'description': ('Ported 1:1 from the Bruno collection (ClasherGeek77/bruno_collection). '
                             'Exercises the local stateless reqres clone (http://localhost:40000). '
                             'CHAIN folder ports bru.setVar -> pm.variables.set; run folders in order.'),
