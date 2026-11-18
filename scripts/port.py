@@ -20,11 +20,11 @@ import os
 import re
 import subprocess
 
-SRC = os.path.expanduser('~/Documents/github_clashergeek77/bruno_collection/reqres')
+SRC = os.path.expanduser(os.environ.get('BRUNO_COLLECTION', os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'bruno_collection', 'reqres')))
 OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                    'reqres_clone.postman_collection.json')
 GROUPS = ['USERS', 'RESOURCES', 'PRODUCTS', 'AUTH', 'EXTRAS', 'CHAIN']
-LANG = os.path.expanduser('~/.local/node_modules/@usebruno/lang')
+LANG = os.path.expanduser(os.environ.get('USEBRUNO_LANG', '~/.local/node_modules/@usebruno/lang'))
 
 
 def parse(path):
